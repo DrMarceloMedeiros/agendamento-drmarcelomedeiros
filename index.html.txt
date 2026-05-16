@@ -67,7 +67,6 @@
             font-size: 1.1rem;
         }
         
-        /* Cards de Planos */
         .plan-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -134,7 +133,6 @@
             line-height: 1.6;
         }
         
-        /* Calendário */
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -221,7 +219,6 @@
             background: #fffbeb;
         }
         
-        /* Horários */
         .time-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -258,12 +255,6 @@
             cursor: not-allowed;
         }
         
-        .time-slot.occupied:hover {
-            background: #fef2f2;
-            border-color: #fecaca;
-        }
-        
-        /* Resumo */
         .summary-box {
             background: linear-gradient(135deg, #f0fdf9, #ffffff);
             border: 3px solid var(--secondary);
@@ -295,7 +286,6 @@
             font-size: 1.1rem;
         }
         
-        /* Botões */
         .btn-primary-custom {
             background: linear-gradient(135deg, var(--primary), #2a4a7a);
             color: white;
@@ -336,7 +326,6 @@
             background: #e2e8f0;
         }
         
-        /* Alertas */
         .alert-custom {
             background: #fffbeb;
             border-left: 5px solid var(--warning);
@@ -360,7 +349,6 @@
             color: var(--success);
         }
         
-        /* Steps */
         .steps-indicator {
             display: flex;
             justify-content: center;
@@ -390,7 +378,6 @@
             color: white;
         }
         
-        /* Responsivo */
         @media (max-width: 768px) {
             .plan-grid {
                 grid-template-columns: 1fr;
@@ -404,12 +391,14 @@
             .time-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .card-custom {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container-main">
-        <!-- Steps Indicator -->
         <div class="steps-indicator">
             <div class="step-dot active" id="step-dot-1">1</div>
             <div class="step-dot" id="step-dot-2">2</div>
@@ -417,7 +406,7 @@
             <div class="step-dot" id="step-dot-4">4</div>
         </div>
         
-        <!-- STEP 1: Escolher Plano -->
+        <!-- STEP 1 -->
         <div class="card-custom" id="step1">
             <div class="step-header">
                 <div class="step-number">1</div>
@@ -462,7 +451,7 @@
             </button>
         </div>
         
-        <!-- STEP 2: Escolher Data -->
+        <!-- STEP 2 -->
         <div class="card-custom" id="step2" style="display: none;">
             <div class="step-header">
                 <div class="step-number">2</div>
@@ -492,7 +481,7 @@
             </div>
         </div>
         
-        <!-- STEP 3: Escolher Horário -->
+        <!-- STEP 3 -->
         <div class="card-custom" id="step3" style="display: none;">
             <div class="step-header">
                 <div class="step-number">3</div>
@@ -517,7 +506,7 @@
             </div>
         </div>
         
-        <!-- STEP 4: Confirmação e Pagamento -->
+        <!-- STEP 4 -->
         <div class="card-custom" id="step4" style="display: none;">
             <div class="step-header">
                 <div class="step-number">4</div>
@@ -553,7 +542,10 @@
                     <strong>Próximo passo:</strong><br>
                     1. Clique em "Ir para Pagamento"<br>
                     2. Pague via Mercado Pago<br>
-                    3. <strong>IMPORTANTE:</strong> Envie o comprovante no WhatsApp <a href="https://wa.me/554491339060?text=Olá,%20fiz%20o%20pagamento%20do%20agendamento" target="_blank" style="color: var(--success); font-weight: 700;">(44) 9133-9060</a><br>
+                    3. <strong>IMPORTANTE:</strong> Envie o comprovante no WhatsApp 
+                    <a href="https://wa.me/554491339060?text=Olá,%20fiz%20o%20pagamento%20do%20agendamento" target="_blank" style="color: var(--success); font-weight: 700;">
+                        (44) 9133-9060
+                    </a><br>
                     4. Aguarde confirmação!
                 </div>
             </div>
@@ -585,57 +577,45 @@
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         
-        // Horários disponíveis (você pode editar aqui)
+        // Horários disponíveis
         const availableSlots = [
             '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
             '11:00', '11:30'
         ];
         
-        // Horários ocupados (você atualiza manualmente aqui)
-        // Formato: { 'YYYY-MM-DD': ['08:00', '09:00'] }
-        const occupiedSlots = {
-            // Exemplo: '2026-05-20': ['08:00', '09:00', '10:00']
-        };
+        // Horários ocupados (atualize manualmente aqui)
+        const occupiedSlots = {};
         
-        // STEP 1: Selecionar Plano
+        // STEP 1
         function selectPlan(price, name, link) {
-            // Remove seleção anterior
             document.querySelectorAll('.plan-option').forEach(el => el.classList.remove('selected'));
-            
-            // Adiciona seleção
             document.getElementById(`plan-${price}`).classList.add('selected');
             
-            // Atualiza estado
             selectedPlan = price;
             selectedPlanName = name;
             paymentLink = link;
             
-            // Habilita botão
             document.getElementById('btn-next-step1').disabled = false;
         }
         
-        // Navegação entre steps
+        // Navegação
         function goToStep(step) {
-            // Esconde todos
             for(let i = 1; i <= 4; i++) {
                 document.getElementById(`step${i}`).style.display = 'none';
                 document.getElementById(`step-dot-${i}`).classList.remove('active', 'completed');
             }
             
-            // Mostra step atual
             document.getElementById(`step${step}`).style.display = 'block';
             document.getElementById(`step-dot-${step}`).classList.add('active');
             
-            // Marca anteriores como completos
             for(let i = 1; i < step; i++) {
                 document.getElementById(`step-dot-${i}`).classList.add('completed');
             }
             
-            // Ações específicas
             if(step === 2) {
                 renderCalendar();
             }
-            if(step === 3) {
+            if(step === 3 && selectedDate) {
                 renderTimeSlots();
                 document.getElementById('selected-date-display').textContent = formatDateBR(selectedDate);
             }
@@ -643,11 +623,10 @@
                 updateSummary();
             }
             
-            // Scroll to top
             window.scrollTo(0, 0);
         }
         
-        // STEP 2: Calendário
+        // Calendário
         function renderCalendar() {
             const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
                                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -658,7 +637,6 @@
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
             
-            // Headers
             const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
             days.forEach(day => {
                 const header = document.createElement('div');
@@ -667,31 +645,28 @@
                 grid.appendChild(header);
             });
             
-            // Dias
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             const today = new Date();
             
-            // Espaços vazios antes do primeiro dia
             for(let i = 0; i < firstDay; i++) {
                 const empty = document.createElement('div');
                 grid.appendChild(empty);
             }
             
-            // Dias do mês
             for(let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(currentYear, currentMonth, day);
                 const dayEl = document.createElement('div');
                 dayEl.className = 'calendar-day';
                 dayEl.textContent = day;
                 
-                // Desabilita dias passados
                 if(date < today) {
                     dayEl.classList.add('disabled');
                 } else {
-                    dayEl.onclick = () => selectDate(date);
+                    dayEl.onclick = (function(d) {
+                        return function() { selectDate(d); };
+                    })(date);
                     
-                    // Marca hoje
                     if(date.toDateString() === today.toDateString()) {
                         dayEl.classList.add('today');
                     }
@@ -721,12 +696,18 @@
         
         function selectDate(date) {
             document.querySelectorAll('.calendar-day').forEach(el => el.classList.remove('selected'));
-            event.target.classList.add('selected');
+            const elements = document.querySelectorAll('.calendar-day');
+            for(let i = 0; i < elements.length; i++) {
+                if(elements[i].textContent == date.getDate() && !elements[i].classList.contains('calendar-day-header')) {
+                    elements[i].classList.add('selected');
+                    break;
+                }
+            }
             selectedDate = date;
             document.getElementById('btn-next-step2').disabled = false;
         }
         
-        // STEP 3: Horários
+        // Horários
         function renderTimeSlots() {
             const grid = document.getElementById('time-grid');
             grid.innerHTML = '';
@@ -743,7 +724,9 @@
                     slot.classList.add('occupied');
                     slot.innerHTML = time + '<br><small>Ocupado</small>';
                 } else {
-                    slot.onclick = () => selectTime(time);
+                    slot.onclick = (function(t) {
+                        return function() { selectTime(t); };
+                    })(time);
                 }
                 
                 grid.appendChild(slot);
@@ -752,12 +735,18 @@
         
         function selectTime(time) {
             document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
-            event.target.classList.add('selected');
+            const elements = document.querySelectorAll('.time-slot');
+            for(let i = 0; i < elements.length; i++) {
+                if(elements[i].textContent.includes(time)) {
+                    elements[i].classList.add('selected');
+                    break;
+                }
+            }
             selectedTime = time;
             document.getElementById('btn-next-step3').disabled = false;
         }
         
-        // STEP 4: Resumo
+        // Resumo
         function updateSummary() {
             document.getElementById('summary-plan').textContent = selectedPlanName;
             document.getElementById('summary-price').textContent = `R$ ${selectedPlan}`;
@@ -766,10 +755,9 @@
         }
         
         function goToPayment() {
-            // Abre Mercado Pago
-            window.open(paymentLink, '_blank');
-            
-            // Mostra mensagem
+            if(paymentLink) {
+                window.open(paymentLink, '_blank');
+            }
             alert('Após o pagamento, envie o comprovante no WhatsApp: (44) 9133-9060\n\nVamos confirmar seu agendamento!');
         }
         
@@ -788,8 +776,7 @@
             return `${day}/${month}/${year}`;
         }
         
-        // Inicializar
-        window.onload = () => {
+        window.onload = function() {
             renderCalendar();
         };
     </script>
